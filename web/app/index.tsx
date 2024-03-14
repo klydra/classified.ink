@@ -1,12 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import '@/app/globals.css'
-import {Button} from "@/components/ui/button.tsx";
+import Home from "@/app/pages/home/home.tsx";
+import {ThemeProvider} from "@/components/theme-provider.tsx";
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-    <React.StrictMode>
-        <Button>
-            test
-        </Button>
-    </React.StrictMode>,
+  <React.StrictMode>
+    <ThemeProvider>
+      <Home/>
+    </ThemeProvider>
+  </React.StrictMode>,
 )

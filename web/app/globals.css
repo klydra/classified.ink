@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 @layer base {
     :root {
         --background: 0 0% 100%;
@@ -48,4 +47,10 @@
         --input: 12 6.5% 15.1%;
         --ring: 20.5 90.2% 48.2%;
     }
+}
+
+@font-face {
+    font-family: 'Inter';
+    font-weight: 100 900;
+    src: url('font.ttf') format('truetype-variations');
 }
