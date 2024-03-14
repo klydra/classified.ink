@@ -50,7 +50,13 @@
 }
 
 @font-face {
-    font-family: 'Inter';
+    font-family: 'Geist';
     font-weight: 100 900;
-    src: url('font.ttf') format('truetype-variations');
+    src: url('geist.woff2') format('woff2-variations');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-weight: 100 900;
+    src: url('geist-mono.woff2') format('woff2-variations');
 }

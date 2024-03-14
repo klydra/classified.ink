@@ -1,8 +1,9 @@
-import {Card} from "@/components/ui/card.tsx";
 import React from "react";
 
 export default function Home() {
   return (
-    <Card>tes2t</Card>
+    <div>
+      <h1 className="text-foreground">test</h1>
+    </div>
   )
 }
