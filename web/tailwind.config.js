@@ -4,7 +4,7 @@ module.exports = {
   content: [
     "./components/**/*.{ts,tsx}",
     "./pages/**/*.{ts,tsx}",
-    "./app/index.tsx",
+    "./app/**/*.{ts,tsx}",
     "./app/index.html",
   ],
   prefix: "",
