@@ -33,3 +33,13 @@
 **/*.bun
 
 /.idea
+
+# generate aes primary key to encrypt / decrypt the data
+# user chooses one strength (iterations) [input everytime]
+# -> randomly genrated salt note down [initial login -> local storage]
+# -> chooses password [everytime]
+# = derived key -> used to encrypt primary key
+
+# using pbkdf2 -> password + salt + iterations -> derived key
+# use as key for secondary aes decryption -> primary key
+# primary key used to encrypt / decrypt the data
