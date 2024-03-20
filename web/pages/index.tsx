@@ -9,8 +9,13 @@ export const Route = createRoute({
 
 function Index() {
   return (
-    <div className="p-2">
-      <h3>Welcome Home!</h3>
+    <div className="flex flex-col flex-grow items-center justify-center">
+      <div className="my-24 mx-8 flex flex-col gap-5 items-center">
+        <h1 className="text-[min(4rem,13vw)] font-bold">classified.ink</h1>
+        <p className="text-[min(1.5rem,5vw)]">
+          Truly secure and private note-taking for everyone.
+        </p>
+      </div>
     </div>
   );
 }

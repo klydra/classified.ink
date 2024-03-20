@@ -11,11 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from "./../pages/__root"
+import { Route as AuthImport } from "./../pages/auth"
 import { Route as AboutImport } from "./../pages/about"
 import { Route as IndexImport } from "./../pages/index"
 import { Route as AboutTest8Import } from "./../pages/about.test8"
 
 // Create/Update Routes
+
+const AuthRoute = AuthImport.update({
+  path: "/auth",
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AboutRoute = AboutImport.update({
   path: "/about",
@@ -44,6 +50,10 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AboutImport
       parentRoute: typeof rootRoute
     }
+    "/auth": {
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
     "/about/test8": {
       preLoaderRoute: typeof AboutTest8Import
       parentRoute: typeof AboutImport
@@ -56,6 +66,7 @@ declare module "@tanstack/react-router" {
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
   AboutRoute.addChildren([AboutTest8Route]),
+  AuthRoute,
 ])
 
 /* prettier-ignore-end */
