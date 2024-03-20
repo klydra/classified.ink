@@ -11,12 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from "./../pages/__root"
+import { Route as FaqImport } from "./../pages/faq"
 import { Route as AuthImport } from "./../pages/auth"
 import { Route as AboutImport } from "./../pages/about"
 import { Route as IndexImport } from "./../pages/index"
-import { Route as AboutTest8Import } from "./../pages/about.test8"
 
 // Create/Update Routes
+
+const FaqRoute = FaqImport.update({
+  path: "/faq",
+  getParentRoute: () => rootRoute,
+} as any)
 
 const AuthRoute = AuthImport.update({
   path: "/auth",
@@ -31,11 +36,6 @@ const AboutRoute = AboutImport.update({
 const IndexRoute = IndexImport.update({
   path: "/",
   getParentRoute: () => rootRoute,
-} as any)
-
-const AboutTest8Route = AboutTest8Import.update({
-  path: "/test8",
-  getParentRoute: () => AboutRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
@@ -54,9 +54,9 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
-    "/about/test8": {
-      preLoaderRoute: typeof AboutTest8Import
-      parentRoute: typeof AboutImport
+    "/faq": {
+      preLoaderRoute: typeof FaqImport
+      parentRoute: typeof rootRoute
     }
   }
 }
@@ -65,8 +65,9 @@ declare module "@tanstack/react-router" {
 
 export const routeTree = rootRoute.addChildren([
   IndexRoute,
-  AboutRoute.addChildren([AboutTest8Route]),
+  AboutRoute,
   AuthRoute,
+  FaqRoute,
 ])
 
 /* prettier-ignore-end */

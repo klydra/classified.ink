@@ -11,7 +11,6 @@ export default function Icon({ className }: { className?: string }) {
     >
       <path
         d="M42 2H2"
-        className=""
         strokeWidth="2.5"
         strokeLinecap="round"
         strokeLinejoin="round"

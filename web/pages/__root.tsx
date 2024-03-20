@@ -4,6 +4,7 @@ import React from "react";
 import { CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
+import { twMerge } from "tailwind-merge";
 
 export const Route = createRootRoute({
   component: () => (
@@ -12,20 +13,37 @@ export const Route = createRootRoute({
         <div className="flex justify-between">
           <div className="flex items-center gap-3 p-4">
             <Link to="/">
-              <Button
-                variant="ghost"
-                className="sm:flex hidden items-center gap-3 select-none cursor-pointer"
-              >
-                <Icon className="w-6" />
-                <div className="xl:block hidden">classified.ink</div>
-              </Button>
+              {({ isActive }) => (
+                <Button
+                  variant="ghost"
+                  className="flex items-center gap-3 select-none cursor-pointer"
+                >
+                  <Icon className="w-6" />
+                  <div
+                    className={twMerge(
+                      "xl:block hidden",
+                      isActive ? "font-bold" : null,
+                    )}
+                  >
+                    classified.ink
+                  </div>
+                </Button>
+              )}
             </Link>
             <Separator orientation="vertical" className="w-0.5 rounded-full" />
-            <Link to="/" className="[&.active]:font-bold">
-              <Button variant="ghost">Home</Button>
+            <Link to="/about">
+              {({ isActive }) => (
+                <Button variant="ghost" className={isActive ? "font-bold" : ""}>
+                  About
+                </Button>
+              )}
             </Link>
-            <Link to="/about" className="[&.active]:font-bold">
-              <Button variant="ghost">About</Button>
+            <Link to="/faq">
+              {({ isActive }) => (
+                <Button variant="ghost" className={isActive ? "font-bold" : ""}>
+                  FAQ
+                </Button>
+              )}
             </Link>
           </div>
           <div className="flex justify-end items-center gap-6 p-4">
