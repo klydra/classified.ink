@@ -24,10 +24,10 @@ function Component() {
         </CardHeader>
         <CardContent className="flex flex-col gap-4 my-4">
           <Input type="text" placeholder="Username" />
-          <Button>Sign in</Button>
+          <Button>Let me in</Button>
         </CardContent>
         <CardFooter>
-          Don't have an account yet? <Button variant="link">Sign up</Button>
+          Don't have an account yet? <Button variant="link">Sign me up</Button>
         </CardFooter>
       </Card>
     </div>

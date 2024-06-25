@@ -33,7 +33,7 @@
 **/*.bun
 
 /.idea
-/web/app/dist
+/app/dist
 
 # generate aes primary key to encrypt / decrypt the data
 # user chooses one strength (iterations) [input everytime]
