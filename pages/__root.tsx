@@ -1,10 +1,19 @@
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router";
 import Icon from "@/components/icon.tsx";
-import React from "react";
+import React, { Suspense } from "react";
 import { CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
 import { twMerge } from "tailwind-merge";
+
+const TanStackRouterDevtools =
+  process.env.NODE_ENV === "production"
+    ? () => null
+    : React.lazy(() =>
+        import("@tanstack/router-devtools").then((res) => ({
+          default: res.TanStackRouterDevtools,
+        })),
+      );
 
 export const Route = createRootRoute({
   component: () => (
@@ -63,6 +72,9 @@ export const Route = createRootRoute({
       <footer>
         <div className="p-4 flex justify-center h-36 bg-accent"></div>
       </footer>
+      <Suspense>
+        <TanStackRouterDevtools />
+      </Suspense>
     </>
   ),
 });
