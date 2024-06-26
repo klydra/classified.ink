@@ -43,30 +43,18 @@ const IndexRoute = IndexImport.update({
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
     "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
       preLoaderRoute: typeof IndexImport;
       parentRoute: typeof rootRoute;
     };
     "/about": {
-      id: "/about";
-      path: "/about";
-      fullPath: "/about";
       preLoaderRoute: typeof AboutImport;
       parentRoute: typeof rootRoute;
     };
     "/auth": {
-      id: "/auth";
-      path: "/auth";
-      fullPath: "/auth";
       preLoaderRoute: typeof AuthImport;
       parentRoute: typeof rootRoute;
     };
     "/faq": {
-      id: "/faq";
-      path: "/faq";
-      fullPath: "/faq";
       preLoaderRoute: typeof FaqImport;
       parentRoute: typeof rootRoute;
     };
@@ -75,11 +63,11 @@ declare module "@tanstack/react-router" {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
+export const routeTree = rootRoute.addChildren([
   IndexRoute,
   AboutRoute,
   AuthRoute,
   FaqRoute,
-});
+]);
 
 /* prettier-ignore-end */
