@@ -1,5 +1,5 @@
 import {defineConfig} from 'vite'
-import {TanStackRouterVite} from '@tanstack/router-plugin/vite'
+import {TanStackRouterVite} from '@tanstack/router-vite-plugin'
 import react from '@vitejs/plugin-react'
 import path from "path";
 
@@ -11,7 +11,9 @@ export default defineConfig({
       routesDirectory: path.resolve(__dirname, "pages"),
       generatedRouteTree: path.resolve(__dirname, "app", "pages.gen.ts"),
       routeFileIgnorePrefix: "-",
-      quoteStyle: "double"
+      quoteStyle: "double",
+      semicolons: true,
+      enableRouteGeneration: true,
     }
   ), react()],
   resolve: {

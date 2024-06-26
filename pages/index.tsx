@@ -4,10 +4,10 @@ import { Route as RootRoute } from "@/pages/__root";
 export const Route = createRoute({
   getParentRoute: () => RootRoute,
   path: "/",
-  component: Index,
+  component: Component,
 });
 
-function Index() {
+function Component() {
   return (
     <div className="flex flex-col flex-grow items-center justify-center">
       <div className="my-24 mx-8 flex flex-col gap-5 items-center">

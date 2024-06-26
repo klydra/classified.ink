@@ -10,66 +10,66 @@
 
 // Import Routes
 
-import { Route as rootRoute } from "./../pages/__root"
-import { Route as FaqImport } from "./../pages/faq"
-import { Route as AuthImport } from "./../pages/auth"
-import { Route as AboutImport } from "./../pages/about"
-import { Route as IndexImport } from "./../pages/index"
+import { Route as rootRoute } from "./../pages/__root";
+import { Route as FaqImport } from "./../pages/faq";
+import { Route as AuthImport } from "./../pages/auth";
+import { Route as AboutImport } from "./../pages/about";
+import { Route as IndexImport } from "./../pages/index";
 
 // Create/Update Routes
 
 const FaqRoute = FaqImport.update({
   path: "/faq",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const AuthRoute = AuthImport.update({
   path: "/auth",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const AboutRoute = AboutImport.update({
   path: "/about",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 const IndexRoute = IndexImport.update({
   path: "/",
   getParentRoute: () => rootRoute,
-} as any)
+} as any);
 
 // Populate the FileRoutesByPath interface
 
 declare module "@tanstack/react-router" {
   interface FileRoutesByPath {
     "/": {
-      id: "/"
-      path: "/"
-      fullPath: "/"
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
+      id: "/";
+      path: "/";
+      fullPath: "/";
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
     "/about": {
-      id: "/about"
-      path: "/about"
-      fullPath: "/about"
-      preLoaderRoute: typeof AboutImport
-      parentRoute: typeof rootRoute
-    }
+      id: "/about";
+      path: "/about";
+      fullPath: "/about";
+      preLoaderRoute: typeof AboutImport;
+      parentRoute: typeof rootRoute;
+    };
     "/auth": {
-      id: "/auth"
-      path: "/auth"
-      fullPath: "/auth"
-      preLoaderRoute: typeof AuthImport
-      parentRoute: typeof rootRoute
-    }
+      id: "/auth";
+      path: "/auth";
+      fullPath: "/auth";
+      preLoaderRoute: typeof AuthImport;
+      parentRoute: typeof rootRoute;
+    };
     "/faq": {
-      id: "/faq"
-      path: "/faq"
-      fullPath: "/faq"
-      preLoaderRoute: typeof FaqImport
-      parentRoute: typeof rootRoute
-    }
+      id: "/faq";
+      path: "/faq";
+      fullPath: "/faq";
+      preLoaderRoute: typeof FaqImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
@@ -80,34 +80,6 @@ export const routeTree = rootRoute.addChildren({
   AboutRoute,
   AuthRoute,
   FaqRoute,
-})
+});
 
 /* prettier-ignore-end */
-
-/* ROUTE_MANIFEST_START
-{
-  "routes": {
-    "__root__": {
-      "filePath": "__root.tsx",
-      "children": [
-        "/",
-        "/about",
-        "/auth",
-        "/faq"
-      ]
-    },
-    "/": {
-      "filePath": "index.tsx"
-    },
-    "/about": {
-      "filePath": "about.tsx"
-    },
-    "/auth": {
-      "filePath": "auth.tsx"
-    },
-    "/faq": {
-      "filePath": "faq.tsx"
-    }
-  }
-}
-ROUTE_MANIFEST_END */

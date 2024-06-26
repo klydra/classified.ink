@@ -15,8 +15,10 @@ const TanStackRouterDevtools =
         })),
       );
 
-export const Route = createRootRoute({
-  component: () => (
+export const Route = createRootRoute({ component: Component });
+
+function Component() {
+  return (
     <>
       <header className="sticky">
         <div className="flex justify-between">
@@ -76,5 +78,5 @@ export const Route = createRootRoute({
         <TanStackRouterDevtools />
       </Suspense>
     </>
-  ),
-});
+  );
+}
