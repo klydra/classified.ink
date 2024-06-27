@@ -2,8 +2,11 @@ name: Deploy to Heroku
 
 on:
   push:
-    branches:
-      - main
+    paths:
+      - bun.lockb
+      - package.json
+      - Dockerfile
+      - api/**
 
 jobs:
   deploy:
