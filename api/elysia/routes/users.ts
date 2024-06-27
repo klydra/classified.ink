@@ -1,6 +1,6 @@
 import { Elysia, t } from "elysia";
-import { userCount, userCreate, userGet } from "../../drizzle/queries.ts";
-import { UserUsername } from "../../drizzle/schema.ts";
+import { userCount, userCreate, userGet } from "api/drizzle/queries.ts";
+import { UserUsername } from "api/drizzle/schema.ts";
 
 export default new Elysia({ prefix: "/users" })
   .get("/", async ({ error }) => {

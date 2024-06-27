@@ -1,5 +1,9 @@
-import { db } from "./config.ts";
-import { type UserInsert, type UserSelect, usersTable } from "./schema.ts";
+import { db } from "api/drizzle/config.ts";
+import {
+  type UserInsert,
+  type UserSelect,
+  usersTable,
+} from "api/drizzle/schema.ts";
 import { count, eq } from "drizzle-orm";
 
 export async function userCount(): Promise<Array<{ count: number }>> {

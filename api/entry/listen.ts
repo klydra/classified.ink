@@ -1,3 +1,4 @@
-import { api } from "elysia";
+import { api } from "api/elysia";
+import cors from "@elysiajs/cors";
 
-api.listen(parseInt(Bun.env.ELYSIA_API_PORT!));
+api.use(cors()).listen(parseInt(Bun.env.ELYSIA_API_PORT!));
