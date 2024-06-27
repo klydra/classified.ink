@@ -9,6 +9,9 @@
   "dependencies": {
     "api": "file:../api"
   },
+  "devDependencies": {
+    "web": "file:../web"
+  },
   "workspaces": [
     "../"
   ]
