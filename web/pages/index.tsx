@@ -31,7 +31,7 @@ function Component() {
         <p className="text-[min(1.5rem,5vw)]">
           Truly secure and private note-taking for everyone.
         </p>
-        <Suspense>
+        <Suspense fallback={<></>}>
           <p className="text-muted">{users} users and counting...</p>
         </Suspense>
       </div>
