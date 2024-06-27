@@ -1,18 +1,17 @@
 {
-  "name": "classified.ink",
+  "name": "vercel",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun --env-file=.env --filter '*' dev",
-    "build": "bun --env-file=.env --filter '*' build"
+    "dev": "bun --env-file=../.env --filter 'classified.ink' dev",
+    "build": "bun --env-file=../.env --filter 'classified.ink' build"
   },
   "dependencies": {
     "api": "file:../api"
   },
-  "devDependencies": {
-    "web": "file:../web"
-  },
   "workspaces": [
-    "../"
+    "..",
+    "../api",
+    "../web"
   ]
 }
