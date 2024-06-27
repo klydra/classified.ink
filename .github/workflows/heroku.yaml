@@ -28,7 +28,7 @@ jobs:
           touch .env
           echo "TURSO_DATABASE_URL=${{ secrets.TURSO_DATABASE_URL }}" >> .env
           echo "TURSO_AUTH_TOKEN=${{ secrets.TURSO_AUTH_TOKEN }}" >> .env
-          echo "ELYSIA_API_PORT=80" >> .env
+          # echo "ELYSIA_API_PORT=80" >> .env
 
       - name: Build Docker image
         run: docker build -t ${{ secrets.HEROKU_APP_NAME }} .
