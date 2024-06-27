@@ -11,6 +11,22 @@ export const Route = createRoute({
 });
 
 function Component() {
+  return (
+    <div className="flex flex-col flex-grow items-center justify-center">
+      <div className="my-24 mx-8 flex flex-col gap-5 items-center">
+        <h1 className="text-[min(4rem,13vw)] font-bold">classified.ink</h1>
+        <p className="text-[min(1.5rem,5vw)]">
+          Truly secure and private note-taking for everyone.
+        </p>
+        <Suspense fallback={<></>}>
+          <UserCount />
+        </Suspense>
+      </div>
+    </div>
+  );
+}
+
+function UserCount() {
   const [users, setUsers] = useState<number | undefined>();
 
   useEffect(() => {
@@ -24,17 +40,7 @@ function Component() {
     });
   }, []);
 
-  return (
-    <div className="flex flex-col flex-grow items-center justify-center">
-      <div className="my-24 mx-8 flex flex-col gap-5 items-center">
-        <h1 className="text-[min(4rem,13vw)] font-bold">classified.ink</h1>
-        <p className="text-[min(1.5rem,5vw)]">
-          Truly secure and private note-taking for everyone.
-        </p>
-        <Suspense fallback={<></>}>
-          <p className="text-muted">{users} users and counting...</p>
-        </Suspense>
-      </div>
-    </div>
-  );
+  if (users === undefined) return undefined;
+
+  return <p className="text-muted">{users} users and counting...</p>;
 }
