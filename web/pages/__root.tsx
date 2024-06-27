@@ -5,6 +5,7 @@ import { CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
 import { twMerge } from "tailwind-merge";
+import { Toaster } from "@/components/ui/toaster.tsx";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -77,6 +78,7 @@ function Component() {
       <Suspense>
         <TanStackRouterDevtools />
       </Suspense>
+      <Toaster />
     </>
   );
 }

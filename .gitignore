@@ -30,9 +30,11 @@
 **/*.bun
 
 /.idea
-/app/dist
-/node_modules
-/bun.lockb
+dist/
+node_modules/
+bun.lockb
+.env
+.vite/
 
 # generate aes primary key to encrypt / decrypt the data
 # user chooses one strength (iterations) [input everytime]

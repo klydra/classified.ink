@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "bun --bun vite",
+    "dev": "bun --env-file=../.env --bun vite",
     "build": "tsc && vite build"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-toast": "^1.2.1",
     "@tanstack/router-cli": "^1.37.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
