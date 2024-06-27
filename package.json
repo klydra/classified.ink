@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "bun --env-file=.env --filter '*' dev",
     "build": "bun --filter 'web' build",
-    "prod": "bun --env-file=.env --filter 'api' build"
+    "prod": "bun --env-file=.env --filter 'api' prod"
   },
   "dependencies": {
     "elysia": "^1.0.25",
