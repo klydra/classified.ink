@@ -32,7 +32,6 @@
 /.idea
 dist/
 node_modules/
-bun.lockb
 .env
 .vite/
 
