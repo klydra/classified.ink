@@ -6,6 +6,6 @@ const api = new Elysia()
   .get("/", () => "Hello Elysia")
   .use(cors())
   .use(users)
-  .listen(parseInt(Bun.env.API_PORT!));
+  .listen(parseInt(Bun.env.ELYSIA_API_PORT!));
 
 export type Api = typeof api;
