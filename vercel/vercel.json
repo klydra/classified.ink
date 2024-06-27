@@ -1,14 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
-  "outputDirectory": "web/dist",
+  "outputDirectory": "../web/dist",
   "buildCommand": "bun run build",
   "installCommand": "bun install",
-  "functions": {
-    "api/entry/vercel.ts": {
-      "includeFiles": "api/elysia/*.ts,api/elysia/**/*.ts,api/drizzle/*.ts"
-    }
-  },
   "rewrites": [
     {
       "source": "/public/:match*",
@@ -16,7 +11,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "/api/entry/vercel"
+      "destination": "/api"
     }
   ]
 }

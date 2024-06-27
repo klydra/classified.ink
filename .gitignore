@@ -20,7 +20,7 @@
 .env.production.local
 
 # vercel
-.vercel
+vercel/.vercel
 
 **/*.trace
 **/*.zip

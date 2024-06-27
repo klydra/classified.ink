@@ -1,7 +1,7 @@
 {
   "name": "api",
   "version": "0.0.0",
-  "module": "entry/listen.ts",
+  "module": "index.ts",
   "type": "module",
   "scripts": {
     "dev": "bun run --watch elysia/index.ts"
