@@ -8,5 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const api = treaty<Api>(
-  window.location.hostname + ":" + import.meta.env.VITE_API_PORT,
+  "https://" +
+    import.meta.env.VITE_API_HOST +
+    ":" +
+    import.meta.env.VITE_API_PORT,
 );
