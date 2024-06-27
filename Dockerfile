@@ -6,6 +6,9 @@ RUN mkdir -p /app
 WORKDIR /app
 
 COPY api/ /app/api
+RUN mkdir /app/web
+RUN echo "{ \"name\": \"web\" }" > /app/web/package.json
+
 COPY .env /app
 COPY bun.lockb /app
 COPY package.json /app
