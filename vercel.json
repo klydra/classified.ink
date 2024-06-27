@@ -6,7 +6,6 @@
   "installCommand": "bun install",
   "functions": {
     "api/entry/vercel.ts": {
-      "runtime": "edge@latest",
       "includeFiles": "api/elysia/*.ts,api/elysia/**/*.ts,api/drizzle/*.ts"
     }
   },
