@@ -6,6 +6,7 @@ on:
       - bun.lockb
       - package.json
       - Dockerfile
+      - .github/workflows/heroku.yaml
       - api/**
 
 jobs:
@@ -19,9 +20,9 @@ jobs:
       - name: Set environment variables
         run: |
           touch .env
-          echo "TURSO_DATABASE_URL=${{ secrets.TURSO_DATABASE_URL }}" > .env
+          echo "TURSO_DATABASE_URL=${{ secrets.TURSO_DATABASE_URL }}" >> .env
           echo "TURSO_AUTH_TOKEN=${{ secrets.TURSO_AUTH_TOKEN }}" >> .env
-          echo "ELYSIA_API_PORT=80" >>> .env
+          echo "ELYSIA_API_PORT=80" >> .env
 
       - name: Deploy to Heroku
         uses: akhileshns/heroku-deploy@v3.13.15
