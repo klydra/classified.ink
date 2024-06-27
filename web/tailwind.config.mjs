@@ -5,7 +5,7 @@ export default {
         "./components/**/*.{ts,tsx}",
         "./pages/**/*.{ts,tsx}",
         "./app/**/*.{ts,tsx}",
-        "./app/index.html",
+        "./index.html",
     ],
     prefix: "",
     theme: {
