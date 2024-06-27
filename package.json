@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun --env-file=.env --filter '*' dev",
-    "build": "bun --filter 'web' build",
+    "build": "bun --env-file=.env --filter 'web' build",
     "prod": "bun --env-file=.env --filter 'api' prod"
   },
   "dependencies": {
