@@ -58,7 +58,7 @@ export default new Elysia({ prefix: "/users" })
   )
   .post(
     "/delete",
-    async ({ body: { username, secretKey }, error }) => {
+    async ({ body: { username }, error }) => {
       const user = await userGet(username);
 
       if (!user) return error(500, "Could not retrieve user");
@@ -68,7 +68,6 @@ export default new Elysia({ prefix: "/users" })
     {
       body: t.Object({
         username: t.String({ format: "regex", regex: UserUsername }),
-        secretKey: t.String(),
       }),
     },
   );

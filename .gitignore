@@ -34,6 +34,8 @@ dist/
 node_modules/
 .env
 .vite/
+/web/tsconfig.app.tsbuildinfo
+/web/tsconfig.node.tsbuildinfo
 
 # generate aes primary key to encrypt / decrypt the data
 # user chooses one strength (iterations) [input everytime]
