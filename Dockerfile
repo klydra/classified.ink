@@ -16,5 +16,4 @@ COPY package.json /app
 RUN bun install --frozen-lockfile --production
 
 USER bun
-CMD [ "echo", "ELYSIA_API_PORT=$PORT", ">>", ".env" ]
 ENTRYPOINT [ "bun", "prod" ]
