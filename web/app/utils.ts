@@ -10,6 +10,7 @@ export function cn(...inputs: ClassValue[]) {
 export const api = treaty<Api>(
   "https://" +
     import.meta.env.VITE_API_HOST +
-    ":" +
-    import.meta.env.VITE_API_PORT,
+    (import.meta.env.VITE_API_PORT != null
+      ? ":" + import.meta.env.VITE_API_PORT
+      : ""),
 );
