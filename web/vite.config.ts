@@ -3,8 +3,19 @@ import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
-// https://vitejs.dev/config/
+const commitHash = require("child_process")
+  .execSync("git rev-parse --short HEAD")
+  .toString();
+
+process.env = {
+  ...process.env,
+  VITE_COMMIT_HASH: commitHash,
+};
+
 export default defineConfig({
+  define: {
+    VITE_COMMIT_HASH: JSON.stringify(commitHash),
+  },
   plugins: [
     TanStackRouterVite({
       routesDirectory: path.resolve(__dirname, "pages"),
