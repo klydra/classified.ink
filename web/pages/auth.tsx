@@ -116,7 +116,7 @@ function Component() {
 
   return (
     <div className="flex-grow w-full flex justify-center items-center">
-      <Card className="w-96 mx-6">
+      <Card className="w-96 mx-6 my-8">
         <CardHeader>
           <CardTitle>Welcome dear note taker!</CardTitle>
           <CardDescription>Enter your username to get started.</CardDescription>
