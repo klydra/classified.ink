@@ -8,7 +8,7 @@ const commitHash = child_process
   .execSync("git rev-parse --short HEAD")
   .toString();
 
-const buildTime = new Date().toLocaleString().replaceAll("/", ".");
+const buildTime = new Date().toLocaleString("de-DE").replaceAll("/", ".");
 
 process.env = {
   ...process.env,
