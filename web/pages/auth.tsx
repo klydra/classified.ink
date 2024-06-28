@@ -116,7 +116,7 @@ function Component() {
 
   return (
     <div className="flex-grow w-full flex justify-center items-center">
-      <Card className="w-96 mx-16">
+      <Card className="w-96 mx-6">
         <CardHeader>
           <CardTitle>Welcome dear note taker!</CardTitle>
           <CardDescription>Enter your username to get started.</CardDescription>
@@ -142,12 +142,12 @@ function Component() {
               <Requirement
                 regex={VerifyUsernameLength}
                 check={username}
-                description="Username must be between 3 and 20 characters long"
+                description="Between 3 and 20 characters long"
               />
               <Requirement
                 regex={VerifyUsernameValid}
                 check={username}
-                description="Username must contain only least valid characters"
+                description="Only valid characters"
               />
             </div>
           </div>
@@ -174,22 +174,22 @@ function Component() {
               <Requirement
                 regex={VerifyPasswordLength}
                 check={password}
-                description="Password must be at least 8 characters long"
+                description="At least 8 characters long"
               />
               <Requirement
                 regex={VerifyPasswordUppercase}
                 check={password}
-                description="Password must contain at least one uppercase letter"
+                description="At least one uppercase letter"
               />
               <Requirement
                 regex={VerifyPasswordLowercase}
                 check={password}
-                description="Password must contain at least one lowercase letter"
+                description="At least one lowercase letter"
               />
               <Requirement
                 regex={VerifyPasswordNumber}
                 check={password}
-                description="Password must contain at least one number"
+                description="At least one number"
               />
             </div>
           </div>
