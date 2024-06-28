@@ -134,7 +134,9 @@ function Component() {
             <div
               className={cn(
                 "flex flex-col gap-1 transition-all duration-300 ease-in-out",
-                usernameFocus ? "mt-3 opacity-100 h-10" : "mt-0 opacity-0 h-0",
+                usernameFocus && !username.match(VerifyUsername)
+                  ? "mt-3 opacity-100 h-10"
+                  : "mt-0 opacity-0 h-0",
               )}
             >
               <Requirement
@@ -162,7 +164,9 @@ function Component() {
             <div
               className={cn(
                 "flex flex-col gap-1 transition-all duration-300 ease-in-out",
-                passwordFocus && user?.status === 404
+                passwordFocus &&
+                  user?.status === 404 &&
+                  !password.match(VerifyPassword)
                   ? "mt-3 opacity-100 h-20"
                   : "mt-0 opacity-0 h-0",
               )}
