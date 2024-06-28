@@ -74,7 +74,9 @@ function Component() {
       </main>
       <footer>
         <div className="p-4 flex flex-col gap-1 justify-center items-center h-36 bg-accent">
-          <p className="text-sm opacity-70">© 2024 classified.ink</p>
+          <p className="text-sm opacity-70">
+            © {new Date().getFullYear()} classified.ink
+          </p>
           <p className="text-xs opacity-30">
             Version {import.meta.env.VITE_COMMIT_HASH}
           </p>
