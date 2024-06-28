@@ -1,9 +1,10 @@
 import { defineConfig } from "vite";
+import * as child_process from "node:child_process";
 import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
-const commitHash = require("child_process")
+const commitHash = child_process
   .execSync("git rev-parse --short HEAD")
   .toString();
 
