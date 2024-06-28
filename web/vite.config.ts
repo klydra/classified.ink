@@ -8,9 +8,12 @@ const commitHash = child_process
   .execSync("git rev-parse --short HEAD")
   .toString();
 
+const buildTime = new Date().toLocaleString().replaceAll("/", ".");
+
 process.env = {
   ...process.env,
   VITE_COMMIT_HASH: commitHash,
+  VITE_BUILD_TIME: buildTime,
 };
 
 export default defineConfig({

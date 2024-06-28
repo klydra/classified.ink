@@ -6,6 +6,12 @@ import { Button } from "@/components/ui/button.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
 import { twMerge } from "tailwind-merge";
 import { Toaster } from "@/components/ui/toaster.tsx";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip.tsx";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -20,7 +26,7 @@ export const Route = createRootRoute({ component: Component });
 
 function Component() {
   return (
-    <>
+    <TooltipProvider>
       <header className="sticky">
         <div className="flex justify-between">
           <div className="flex items-center gap-3 p-4">
@@ -77,15 +83,22 @@ function Component() {
           <p className="text-sm opacity-70">
             © {new Date().getFullYear()} classified.ink
           </p>
-          <p className="text-xs opacity-30">
-            Version {import.meta.env.VITE_COMMIT_HASH}
-          </p>
+          <Tooltip>
+            <TooltipTrigger>
+              <p className="text-sm font-bold opacity-30">
+                {import.meta.env.VITE_COMMIT_HASH}
+              </p>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p className="text-sm">{import.meta.env.VITE_BUILD_TIME}</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </footer>
       <Suspense>
         <TanStackRouterDevtools />
       </Suspense>
       <Toaster />
-    </>
+    </TooltipProvider>
   );
 }
