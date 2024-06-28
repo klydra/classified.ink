@@ -17,9 +17,6 @@ process.env = {
 };
 
 export default defineConfig({
-  define: {
-    VITE_COMMIT_HASH: JSON.stringify(commitHash),
-  },
   plugins: [
     TanStackRouterVite({
       routesDirectory: path.resolve(__dirname, "pages"),
