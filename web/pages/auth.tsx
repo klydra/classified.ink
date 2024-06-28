@@ -135,8 +135,8 @@ function Component() {
               className={cn(
                 "flex flex-col gap-1 transition-all duration-300 ease-in-out",
                 usernameFocus && !username.match(VerifyUsername)
-                  ? "mt-3 opacity-100 h-10"
-                  : "mt-0 opacity-0 h-0",
+                  ? "pt-3 opacity-100 h-12"
+                  : "pt-0 opacity-0 h-0",
               )}
             >
               <Requirement
@@ -167,8 +167,8 @@ function Component() {
                 passwordFocus &&
                   user?.status === 404 &&
                   !password.match(VerifyPassword)
-                  ? "mt-3 opacity-100 h-20"
-                  : "mt-0 opacity-0 h-0",
+                  ? "pt-3 opacity-100 h-[5.25rem]"
+                  : "pt-0 opacity-0 h-0",
               )}
             >
               <Requirement
