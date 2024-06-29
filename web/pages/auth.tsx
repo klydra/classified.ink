@@ -21,6 +21,8 @@ import {
 import { UserUsername } from "api/drizzle/schema";
 import { api, cn } from "@/app/utils";
 import { useQuery } from "@tanstack/react-query";
+import SecretKey from "encryption/models/secret-key";
+import SecretLock from "encryption/models/secret-lock";
 
 export const Route = createFileRoute("/auth")({ component: Component });
 
@@ -28,7 +30,7 @@ const VerifyUsername = UserUsername;
 const VerifyUsernameLength = "^.{3,20}$";
 const VerifyUsernameValid = "^[\\w\\.\\-]+$";
 
-const VerifyPassword = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+const VerifyPassword = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$";
 const VerifyPasswordUppercase = "(?=.*[A-Z])";
 const VerifyPasswordLowercase = "(?=.*[a-z])";
 const VerifyPasswordNumber = "(?=.*\\d)";
@@ -47,72 +49,6 @@ function Component() {
       ? () => api.users.get.post({ username })
       : undefined,
   });
-
-  function Action() {
-    if (!username.match(VerifyUsername))
-      return (
-        <Button disabled>
-          <RectangleEllipsis className="mr-2 h-4 w-4" /> Enter your username
-        </Button>
-      );
-
-    if (userLoading)
-      return (
-        <Button disabled>
-          <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
-        </Button>
-      );
-
-    if (user?.status === 404)
-      return (
-        <Button disabled={!password.match(VerifyPassword)}>
-          <Plus className="mr-2 h-4 w-4" /> Create account
-        </Button>
-      );
-
-    if (user?.status === 200)
-      return (
-        <>
-          <Button>
-            <LogIn className="mr-2 h-4 w-4" /> Log in
-          </Button>
-        </>
-      );
-
-    return (
-      <Button disabled>
-        <CloudOff className="mr-2 h-4 w-4" /> Couldn't check status
-      </Button>
-    );
-  }
-
-  function Requirement({
-    regex,
-    check,
-    description,
-  }: {
-    regex: string;
-    check: string;
-    description: string;
-  }) {
-    const match = check.match(regex);
-
-    return (
-      <div
-        className={cn(
-          "flex items-center gap-2 text-xs",
-          match ? "text-green-500" : "text-red-500",
-        )}
-      >
-        {match ? (
-          <CheckCircle className="h-3 w-3" />
-        ) : (
-          <XCircle className="h-3 w-3" />
-        )}
-        {description}
-      </div>
-    );
-  }
 
   return (
     <div className="flex-grow w-full flex justify-center items-center">
@@ -133,7 +69,7 @@ function Component() {
             />
             <div
               className={cn(
-                "flex flex-col gap-1 transition-all duration-300 ease-in-out",
+                "flex flex-col gap-1 transition-all duration-300 ease-in-out pointer-events-none",
                 usernameFocus && !username.match(VerifyUsername)
                   ? "pt-3 opacity-100 h-12"
                   : "pt-0 opacity-0 h-0",
@@ -163,7 +99,7 @@ function Component() {
             />
             <div
               className={cn(
-                "flex flex-col gap-1 transition-all duration-300 ease-in-out",
+                "flex flex-col gap-1 transition-all duration-300 ease-in-out pointer-events-none",
                 passwordFocus &&
                   user?.status === 404 &&
                   !password.match(VerifyPassword)
@@ -193,9 +129,99 @@ function Component() {
               />
             </div>
           </div>
-          <Action />
+          <Action
+            userLoading={userLoading}
+            status={user?.status}
+            username={username}
+            password={password}
+          />
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+function Action({
+  userLoading,
+  status,
+  username,
+  password,
+}: {
+  userLoading: boolean;
+  status: number | undefined;
+  username: string;
+  password: string;
+}) {
+  if (!username.match(VerifyUsername))
+    return (
+      <Button disabled>
+        <RectangleEllipsis className="mr-2 h-4 w-4" /> Enter your username
+      </Button>
+    );
+
+  if (userLoading)
+    return (
+      <Button disabled>
+        <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking...
+      </Button>
+    );
+
+  if (status === 404)
+    return (
+      <Button
+        disabled={!password.match(VerifyPassword)}
+        onClick={() => {
+          const secretLock = SecretLock.withPassword(password);
+          console.log(secretLock.nc);
+          console.log(secretLock.toString());
+          const secretKey = SecretKey.withLock(secretLock);
+          api.users.create.post({ username, secretKey: secretKey.toString() });
+        }}
+      >
+        <Plus className="mr-2 h-4 w-4" /> Create account
+      </Button>
+    );
+
+  if (status === 200)
+    return (
+      <>
+        <Button>
+          <LogIn className="mr-2 h-4 w-4" /> Log in
+        </Button>
+      </>
+    );
+
+  return (
+    <Button disabled>
+      <CloudOff className="mr-2 h-4 w-4" /> Couldn't check status
+    </Button>
+  );
+}
+
+function Requirement({
+  regex,
+  check,
+  description,
+}: {
+  regex: string;
+  check: string;
+  description: string;
+}) {
+  const match = check.match(regex);
+
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-2 text-xs",
+        match ? "text-green-500" : "text-red-500",
+      )}
+    >
+      {match ? (
+        <CheckCircle className="h-3 w-3" />
+      ) : (
+        <XCircle className="h-3 w-3" />
+      )}
+      {description}
     </div>
   );
 }
