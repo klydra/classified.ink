@@ -10,7 +10,9 @@
   "dependencies": {
     "elysia": "^1.0.25",
     "@elysiajs/eden": "^1.0.14",
-    "@elysiajs/cors": "^1.0.2"
+    "@elysiajs/cors": "^1.0.2",
+    "typescript": "^5.5.2",
+    "encryption": "file:./encryption"
   },
   "devDependencies": {
     "@types/bun": "latest",
