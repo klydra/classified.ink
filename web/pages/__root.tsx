@@ -90,7 +90,9 @@ function Component() {
               </p>
             </TooltipTrigger>
             <TooltipContent side="bottom">
-              <p className="text-sm">{import.meta.env.VITE_BUILD_TIME}</p>
+              <p className="text-sm">
+                Built at {import.meta.env.VITE_BUILD_TIME}
+              </p>
             </TooltipContent>
           </Tooltip>
         </div>
