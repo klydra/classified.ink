@@ -1,6 +1,7 @@
 import crypto from "crypto";
 import type SecretKey from "./secret-key.ts";
 import type SecretLock from "./secret-lock.ts";
+import NoteContent from "./note-content.ts";
 
 export const NOTE_IV_LENGTH = 32;
 
@@ -22,7 +23,7 @@ export default class Note {
   }
 
   static fromContent(
-    content: string,
+    content: NoteContent,
     secretKey: SecretKey,
     lock: SecretLock,
   ): Note {
@@ -33,13 +34,13 @@ export default class Note {
       iv,
     );
 
-    let encrypted = cipher.update(content, "utf8", "hex");
+    let encrypted = cipher.update(content.toJSON(), "utf8", "hex");
     encrypted += cipher.final("hex");
 
     return new Note(iv, encrypted);
   }
 
-  decrypt(secretKey: SecretKey, lock: SecretLock): string {
+  decrypt(secretKey: SecretKey, lock: SecretLock): NoteContent {
     const decipher = crypto.createDecipheriv(
       "aes-256-cbc",
       secretKey.decrypt(lock),
@@ -49,6 +50,6 @@ export default class Note {
     let decrypted = decipher.update(this.blob, "hex", "utf8");
     decrypted += decipher.final("utf8");
 
-    return decrypted;
+    return NoteContent.fromJSON(decrypted);
   }
 }

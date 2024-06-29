@@ -1,5 +1,8 @@
 import { db } from "api/drizzle/config.ts";
 import {
+  type NoteInsert,
+  type NoteSelect,
+  notesTable,
   type UserInsert,
   type UserSelect,
   usersTable,
@@ -27,4 +30,34 @@ export async function userDelete(username: string) {
     .delete(usersTable)
     .where(eq(usersTable.username, username))
     .execute();
+}
+
+export async function noteCount(): Promise<Array<{ count: number }>> {
+  return await db.select({ count: count() }).from(notesTable).execute();
+}
+
+export async function noteGetByUsername(
+  username: string,
+): Promise<Array<NoteSelect>> {
+  return await db
+    .select()
+    .from(notesTable)
+    .where(eq(notesTable.username, username))
+    .execute();
+}
+
+export async function noteGetById(id: string): Promise<Array<NoteSelect>> {
+  return await db
+    .select()
+    .from(notesTable)
+    .where(eq(notesTable.id, id))
+    .execute();
+}
+
+export async function noteCreate(note: NoteSelect): Promise<Array<NoteInsert>> {
+  return await db.insert(notesTable).values(note).returning().execute();
+}
+
+export async function noteDelete(id: string) {
+  return await db.delete(notesTable).where(eq(notesTable.id, id)).execute();
 }

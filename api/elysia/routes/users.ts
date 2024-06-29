@@ -6,8 +6,8 @@ import {
   userGet,
 } from "api/drizzle/queries.ts";
 import { UserUsername } from "api/drizzle/schema.ts";
-import { SECRET_LOCK_DERIVED_LENGTH } from "encryption/src/secret-lock.ts";
-import SecretKey, { SECRET_KEY_LENGTH } from "encryption/src/secret-key.ts";
+import { SECRET_LOCK_DERIVED_LENGTH } from "encryption/models/secret-lock.ts";
+import SecretKey, { SECRET_KEY_LENGTH } from "encryption/models/secret-key.ts";
 
 export default new Elysia({ prefix: "/users" })
   .get("/", async ({ error }) => {
