@@ -1,6 +1,8 @@
 import crypto from "crypto";
-import type SecretKey from "./secret-key";
-import type SecretLock from "./secret-lock";
+import type SecretKey from "./secret-key.ts";
+import type SecretLock from "./secret-lock.ts";
+
+export const NOTE_IV_LENGTH = 32;
 
 export default class Note {
   iv: string;
@@ -12,7 +14,7 @@ export default class Note {
   }
 
   static fromString(note: string): Note {
-    return new Note(note.slice(0, 32), note.slice(32));
+    return new Note(note.slice(0, NOTE_IV_LENGTH), note.slice(NOTE_IV_LENGTH));
   }
 
   toString(): string {
@@ -24,7 +26,7 @@ export default class Note {
     secretKey: SecretKey,
     lock: SecretLock,
   ): Note {
-    const iv = crypto.randomBytes(32).toString("hex");
+    const iv = crypto.randomBytes(NOTE_IV_LENGTH).toString("hex");
     const cipher = crypto.createCipheriv(
       "aes-256-cbc",
       secretKey.decrypt(lock),
