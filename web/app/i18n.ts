@@ -12,7 +12,7 @@ const resources = {
   },
 };
 
-await i18n.use(initReactI18next).init({
+i18n.use(initReactI18next).init({
   fallbackLng: "en",
   resources,
   interpolation: {
