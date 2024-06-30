@@ -1,9 +1,9 @@
-import crypto from "crypto";
 import type SecretKey from "./secret-key.ts";
 import type SecretLock from "./secret-lock.ts";
 import NoteContent from "./note-content.ts";
+import { decryptIV, encryptIV, randomBytes } from "../crypto.ts";
 
-export const NOTE_IV_LENGTH = 32;
+export const NOTE_IV_LENGTH = 16;
 
 export default class Note {
   iv: string;
@@ -22,34 +22,27 @@ export default class Note {
     return this.iv + this.blob;
   }
 
-  static fromContent(
+  static async fromContent(
     content: NoteContent,
     secretKey: SecretKey,
     lock: SecretLock,
-  ): Note {
-    const iv = crypto.randomBytes(NOTE_IV_LENGTH).toString("hex");
-    const cipher = crypto.createCipheriv(
-      "aes-256-cbc",
-      secretKey.decrypt(lock),
+  ): Promise<Note> {
+    const iv = await randomBytes(NOTE_IV_LENGTH);
+    const encrypted = await encryptIV(
+      await secretKey.decrypt(lock),
       iv,
+      content.toString(),
     );
-
-    let encrypted = cipher.update(content.toJSON(), "utf8", "hex");
-    encrypted += cipher.final("hex");
 
     return new Note(iv, encrypted);
   }
 
-  decrypt(secretKey: SecretKey, lock: SecretLock): NoteContent {
-    const decipher = crypto.createDecipheriv(
-      "aes-256-cbc",
-      secretKey.decrypt(lock),
+  async decrypt(secretKey: SecretKey, lock: SecretLock): Promise<NoteContent> {
+    const decrypted = await decryptIV(
+      await secretKey.decrypt(lock),
       this.iv,
+      this.blob,
     );
-
-    let decrypted = decipher.update(this.blob, "hex", "utf8");
-    decrypted += decipher.final("utf8");
-
-    return NoteContent.fromJSON(decrypted);
+    return NoteContent.fromString(decrypted);
   }
 }

@@ -24,8 +24,8 @@ export default class NoteContent {
     );
   }
 
-  static fromJSON(json: string): NoteContent {
-    return NoteContent.fromObject(JSON.parse(json));
+  static fromString(base64: string): NoteContent {
+    return NoteContent.fromObject(JSON.parse(atob(base64)));
   }
 
   toObject(): {
@@ -43,7 +43,7 @@ export default class NoteContent {
     };
   }
 
-  toJSON(): string {
-    return JSON.stringify(this.toObject());
+  toString(): string {
+    return btoa(JSON.stringify(this.toObject()));
   }
 }

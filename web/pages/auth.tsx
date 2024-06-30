@@ -170,11 +170,11 @@ function Action({
     return (
       <Button
         disabled={!password.match(VerifyPassword)}
-        onClick={() => {
-          const secretLock = SecretLock.withPassword(password);
+        onClick={async () => {
+          const secretLock = await SecretLock.withPassword(password);
           console.log(secretLock.nc);
           console.log(secretLock.toString());
-          const secretKey = SecretKey.withLock(secretLock);
+          const secretKey = await SecretKey.withLock(secretLock);
           api.users.create.post({ username, secretKey: secretKey.toString() });
         }}
       >

@@ -1,7 +1,7 @@
-import crypto from "crypto";
 import type SecretLock from "./secret-lock.ts";
+import { decryptIV, encryptIV, pbkdf2, randomBytes } from "../crypto.ts";
 
-export const SECRET_KEY_IV_LENGTH = 32;
+export const SECRET_KEY_IV_LENGTH = 16;
 export const SECRET_KEY_PASSPORT_LENGTH = 32;
 export const SECRET_KEY_PASSPORT_ITERATIONS = 100000;
 export const SECRET_KEY_BLOB_LENGTH = 32;
@@ -34,53 +34,33 @@ export default class SecretKey {
     return this.iv + this.passport + this.blob;
   }
 
-  static withLock(lock: SecretLock): SecretKey {
-    const iv = crypto.randomBytes(SECRET_KEY_IV_LENGTH).toString("hex");
-    const cipher = crypto.createCipheriv("aes-256-cbc", lock.derive(), iv);
+  static async withLock(lock: SecretLock): Promise<SecretKey> {
+    const iv = await randomBytes(SECRET_KEY_IV_LENGTH);
+    const secretKey = await randomBytes(SECRET_KEY_BLOB_LENGTH);
 
-    const secretKey = crypto
-      .randomBytes(SECRET_KEY_BLOB_LENGTH)
-      .toString("hex");
+    const encrypted = await encryptIV(await lock.derive(), iv, secretKey);
 
-    let encrypted = cipher.update(secretKey, "utf8", "hex");
-    encrypted += cipher.final("hex");
-
-    const passport = crypto
-      .pbkdf2Sync(
-        encrypted,
-        lock.derive(),
-        SECRET_KEY_PASSPORT_ITERATIONS,
-        SECRET_KEY_PASSPORT_LENGTH,
-        "sha512",
-      )
-      .toString("hex");
+    const passport = await pbkdf2(
+      encrypted,
+      await lock.derive(),
+      SECRET_KEY_PASSPORT_ITERATIONS,
+      SECRET_KEY_PASSPORT_LENGTH,
+    );
 
     return new SecretKey(iv, passport, encrypted);
   }
 
-  decrypt(lock: SecretLock): string {
-    const decipher = crypto.createDecipheriv(
-      "aes-256-cbc",
-      lock.derive(),
-      this.iv,
-    );
-
-    let decrypted = decipher.update(this.blob, "hex", "utf8");
-    decrypted += decipher.final("utf8");
-
-    return decrypted;
+  async decrypt(lock: SecretLock): Promise<string> {
+    return await decryptIV(await lock.derive(), this.iv, this.blob);
   }
 
-  proof(derived: string): boolean {
-    const expected = crypto
-      .pbkdf2Sync(
-        this.blob,
-        derived,
-        SECRET_KEY_PASSPORT_ITERATIONS,
-        SECRET_KEY_PASSPORT_LENGTH,
-        "sha512",
-      )
-      .toString("hex");
+  async proof(derived: string): Promise<boolean> {
+    const expected = await pbkdf2(
+      this.blob,
+      derived,
+      SECRET_KEY_PASSPORT_ITERATIONS,
+      SECRET_KEY_PASSPORT_LENGTH,
+    );
 
     return expected === this.passport;
   }

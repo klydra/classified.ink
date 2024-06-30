@@ -1,4 +1,4 @@
-import crypto from "crypto";
+import { pbkdf2, randomBytes } from "../crypto.ts";
 
 export const SECRET_LOCK_NC_LENGTH = 32;
 export const SECRET_LOCK_DERIVED_LENGTH = 32;
@@ -13,20 +13,21 @@ export default class SecretLock {
     this.password = password;
   }
 
-  static withPassword(password: string): SecretLock {
-    const nc = crypto.randomBytes(SECRET_LOCK_NC_LENGTH).toString("hex");
+  toString(): string {
+    return "[nc=" + this.nc + ", password=" + this.password + "]";
+  }
+
+  static async withPassword(password: string): Promise<SecretLock> {
+    const nc = await randomBytes(SECRET_LOCK_NC_LENGTH);
     return new SecretLock(nc, password);
   }
 
-  derive(): string {
-    return crypto
-      .pbkdf2Sync(
-        this.password,
-        this.nc,
-        SECRET_LOCK_NC_ITERATIONS,
-        SECRET_LOCK_DERIVED_LENGTH,
-        "sha512",
-      )
-      .toString("hex");
+  async derive(): Promise<string> {
+    return await pbkdf2(
+      this.password,
+      this.nc,
+      SECRET_LOCK_NC_ITERATIONS,
+      SECRET_LOCK_DERIVED_LENGTH,
+    );
   }
 }
