@@ -6,6 +6,7 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY api/ /app/api
+COPY encryption/ /app/encryption
 RUN mkdir /app/web
 COPY web/package.json /app/web
 
