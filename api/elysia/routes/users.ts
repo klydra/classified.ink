@@ -60,8 +60,8 @@ export default new Elysia({ prefix: "/users" })
       body: t.Object({
         username: t.String({ format: "regex", regex: UserUsername }),
         secretKey: t.String({
-          minLength: SECRET_KEY_LENGTH,
-          maxLength: SECRET_KEY_LENGTH,
+          minLength: SECRET_KEY_LENGTH * 2,
+          maxLength: SECRET_KEY_LENGTH * 2,
         }),
       }),
     },
@@ -90,8 +90,8 @@ export default new Elysia({ prefix: "/users" })
       body: t.Object({
         username: t.String({ format: "regex", regex: UserUsername }),
         derived: t.String({
-          minLength: SECRET_LOCK_DERIVED_LENGTH,
-          maxLength: SECRET_LOCK_DERIVED_LENGTH,
+          minLength: SECRET_LOCK_DERIVED_LENGTH * 2,
+          maxLength: SECRET_LOCK_DERIVED_LENGTH * 2,
         }),
       }),
     },

@@ -172,8 +172,6 @@ function Action({
         disabled={!password.match(VerifyPassword)}
         onClick={async () => {
           const secretLock = await SecretLock.withPassword(password);
-          console.log(secretLock.nc);
-          console.log(secretLock.toString());
           const secretKey = await SecretKey.withLock(secretLock);
           api.users.create.post({ username, secretKey: secretKey.toString() });
         }}
