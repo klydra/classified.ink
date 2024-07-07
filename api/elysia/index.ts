@@ -4,7 +4,7 @@ import cors from "@elysiajs/cors";
 import notes from "./routes/notes.ts";
 
 export const api = new Elysia()
-  .use(cors())
+  .use(cors({ origin: "*" }))
   .use(users)
   .use(notes)
   .get("/health", () => "ok")
