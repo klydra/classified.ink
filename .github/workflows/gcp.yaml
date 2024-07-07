@@ -6,7 +6,7 @@ on:
       - bun.lockb
       - package.json
       - Dockerfile
-      - .github/workflows/heroku.yaml
+      - .github/workflows/gcp.yaml
       - api/**
 
 jobs:
@@ -20,8 +20,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      - name: Set up Heroku CLI
-        run: curl https://cli-assets.heroku.com/install.sh | sh
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: "${{ secrets.SERVICE_ACCOUNT_KEY }}"
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
+      - name: Docker auth
+        run: |-
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Set environment variables
         run: |
@@ -31,16 +40,7 @@ jobs:
           # echo "ELYSIA_API_PORT=80" >> .env
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.HEROKU_APP_NAME }} .
+        run: docker build -t us-central1-docker.pkg.dev/classified-ink/classified-ink/api:latest .
 
-      - name: Authenticate with Heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:login
-
-      - name: Push Docker image to Heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: |
-          heroku container:push web --app ${{ secrets.HEROKU_APP_NAME }}
-          heroku container:release web --app ${{ secrets.HEROKU_APP_NAME }}
+      - name: Build image
+        run: docker push us-central1-docker.pkg.dev/classified-ink/classified-ink/api:latest
