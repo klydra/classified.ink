@@ -5,13 +5,13 @@ import { CircleUser } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
 import { Separator } from "@/components/ui/separator.tsx";
 import { twMerge } from "tailwind-merge";
-import { Toaster } from "@/components/ui/toaster.tsx";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
+import { useUserStore } from "@/app/zustand.ts";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -25,6 +25,8 @@ const TanStackRouterDevtools =
 export const Route = createRootRoute({ component: Component });
 
 function Component() {
+  const userStore = useUserStore();
+
   return (
     <TooltipProvider>
       <header className="sticky">
@@ -67,7 +69,7 @@ function Component() {
           <div className="flex justify-end items-center gap-6 p-4">
             <Link to="/auth" className="[&.active]:font-bold">
               <Button className="bg-secondary flex items-center gap-2.5">
-                Sign in
+                {userStore.username ? userStore.username : "Sign in"}
                 <CircleUser />
               </Button>
             </Link>
@@ -100,7 +102,6 @@ function Component() {
       <Suspense>
         <TanStackRouterDevtools />
       </Suspense>
-      <Toaster />
     </TooltipProvider>
   );
 }

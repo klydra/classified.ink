@@ -4,9 +4,12 @@ import { decryptIV, encryptIV, pbkdf2, randomBytes } from "../crypto.ts";
 export const SECRET_KEY_IV_LENGTH = 16;
 export const SECRET_KEY_PASSPORT_LENGTH = 32;
 export const SECRET_KEY_PASSPORT_ITERATIONS = 100000;
-export const SECRET_KEY_BLOB_LENGTH = 80;
+export const SECRET_KEY_BLOB_LENGTH = 32;
+export const SECRET_KEY_BLOB_ENCRYPTED_LENGTH = 80;
 export const SECRET_KEY_LENGTH =
-  SECRET_KEY_IV_LENGTH + SECRET_KEY_PASSPORT_LENGTH + SECRET_KEY_BLOB_LENGTH;
+  SECRET_KEY_IV_LENGTH +
+  SECRET_KEY_PASSPORT_LENGTH +
+  SECRET_KEY_BLOB_ENCRYPTED_LENGTH;
 
 export default class SecretKey {
   iv: string;

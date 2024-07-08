@@ -2,8 +2,8 @@ import { createRoute } from "@tanstack/react-router";
 import { Route as RootRoute } from "@/pages/__root";
 import { Suspense, useEffect, useState } from "react";
 import { api } from "@/app/utils.ts";
-import { toast } from "@/components/ui/use-toast.ts";
 import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
 
 export const Route = createRoute({
   getParentRoute: () => RootRoute,
@@ -33,8 +33,7 @@ function UserCount() {
   useEffect(() => {
     api.users.index.get().then(({ data, error }) => {
       if (error)
-        toast({
-          title: "Could not retrieve user count",
+        toast("Could not retrieve user count", {
           description: error.value,
         });
       else setUsers(data);

@@ -13,6 +13,7 @@ import { createFileRoute } from "@tanstack/react-router";
 // Import Routes
 
 import { Route as rootRoute } from "./../pages/__root";
+import { Route as HelloImport } from "./../pages/hello";
 import { Route as AuthImport } from "./../pages/auth";
 import { Route as AboutImport } from "./../pages/about";
 import { Route as IndexImport } from "./../pages/index";
@@ -27,6 +28,11 @@ const FaqLazyRoute = FaqLazyImport.update({
   path: "/faq",
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import("./../pages/faq.lazy").then((d) => d.Route));
+
+const HelloRoute = HelloImport.update({
+  path: "/hello",
+  getParentRoute: () => rootRoute,
+} as any);
 
 const AuthRoute = AuthImport.update({
   path: "/auth",
@@ -59,6 +65,10 @@ declare module "@tanstack/react-router" {
       preLoaderRoute: typeof AuthImport;
       parentRoute: typeof rootRoute;
     };
+    "/hello": {
+      preLoaderRoute: typeof HelloImport;
+      parentRoute: typeof rootRoute;
+    };
     "/faq": {
       preLoaderRoute: typeof FaqLazyImport;
       parentRoute: typeof rootRoute;
@@ -72,6 +82,7 @@ export const routeTree = rootRoute.addChildren([
   IndexRoute,
   AboutRoute,
   AuthRoute,
+  HelloRoute,
   FaqLazyRoute,
 ]);
 

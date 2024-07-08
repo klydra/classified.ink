@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
   CheckCircle,
@@ -23,6 +23,8 @@ import { api, cn } from "@/app/utils";
 import { useQuery } from "@tanstack/react-query";
 import SecretKey from "encryption/models/secret-key";
 import SecretLock from "encryption/models/secret-lock";
+import { toast } from "sonner";
+import { useSessionStore, useUserStore } from "@/app/zustand.ts";
 
 export const Route = createFileRoute("/auth")({ component: Component });
 
@@ -152,6 +154,10 @@ function Action({
   username: string;
   password: string;
 }) {
+  const navigate = useNavigate();
+  const userStore = useUserStore();
+  const sessionStore = useSessionStore();
+
   if (!username.match(VerifyUsername))
     return (
       <Button disabled>
@@ -173,7 +179,23 @@ function Action({
         onClick={async () => {
           const secretLock = await SecretLock.withPassword(password);
           const secretKey = await SecretKey.withLock(secretLock);
-          api.users.create.post({ username, secretKey: secretKey.toString() });
+          const user = await api.users.create.post({
+            username,
+            secretKey: secretKey.toString(),
+          });
+
+          if (user.error) {
+            toast("Couldn't create account", {
+              description: user.error.value,
+            });
+            return;
+          }
+
+          userStore.authenticate(username, secretLock.pk);
+          sessionStore.initialize(secretKey.toString());
+
+          toast("Account created");
+          await navigate({ to: "/hello" });
         }}
       >
         <Plus className="mr-2 h-4 w-4" /> Create account
