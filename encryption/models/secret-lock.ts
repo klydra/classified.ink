@@ -8,18 +8,18 @@ export default class SecretLock {
   pk: string;
   pw: string;
 
-  constructor(nc: string, pw: string) {
-    this.pk = nc;
+  constructor(pk: string, pw: string) {
+    this.pk = pk;
     this.pw = pw;
   }
 
   toString(): string {
-    return "[nc=" + this.pk + ", pw=" + this.pw + "]";
+    return "[pk=" + this.pk + ", pw=" + this.pw + "]";
   }
 
   static async withPassword(pw: string): Promise<SecretLock> {
-    const nc = await randomBytes(SECRET_LOCK_NC_LENGTH);
-    return new SecretLock(nc, pw);
+    const pk = await randomBytes(SECRET_LOCK_NC_LENGTH);
+    return new SecretLock(pk, pw);
   }
 
   async derive(): Promise<string> {

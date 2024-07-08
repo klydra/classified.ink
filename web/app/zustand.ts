@@ -7,7 +7,7 @@ type UserStore = {
   username: string | undefined;
   pk: string | undefined;
 
-  authenticate: (username: string, nc: string) => void;
+  authenticate: (username: string, pk: string) => void;
 };
 
 type SessionStore = {

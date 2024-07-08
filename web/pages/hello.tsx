@@ -10,17 +10,16 @@ export const Route = createFileRoute("/hello")({
         <p className="px-4 py-6 text-2xl">
           Welcome aboard, <b>{userStore.username}</b>!
         </p>
-        <p className="text-muted text-sm">
-          You can now start creating notes.
-          <br />
-          You can also view your notes in the dashboard.
-        </p>
+        <p className="px-4 py-6 text-xl">{userStore.pk}</p>
         <p>
-          Among your chosen password, you will also need to have your PK to gain
-          access to your notes.
+          Note this down.
           <br />
-          We have already saved it for you in this browser, but you should note
-          it down to log in somewhere else or if it's lost here.
+          This is your <b>key</b>.
+          <br />
+          You can <b>not restore it</b>.<br />
+          It's also saved in this browser.
+          <br />
+          But if it's gone, <b>your notes are gone</b>.
         </p>
       </div>
     );
