@@ -129,19 +129,19 @@ export async function encryptIV(
   return arrayBufferToHexString(encrypted);
 }
 
-function utf8StringToUint8Array(utf8String: string) {
+export function utf8StringToUint8Array(utf8String: string) {
   return new TextEncoder().encode(utf8String);
 }
 
-function uint8ArrayToUtf8String(uint8Array: Uint8Array) {
+export function uint8ArrayToUtf8String(uint8Array: Uint8Array) {
   return new TextDecoder().decode(uint8Array);
 }
 
-function arrayBufferToUtf8String(uint8Array: ArrayBuffer) {
+export function arrayBufferToUtf8String(uint8Array: ArrayBuffer) {
   return uint8ArrayToUtf8String(new Uint8Array(uint8Array));
 }
 
-function hexStringToUint8Array(hexString: string) {
+export function hexStringToUint8Array(hexString: string) {
   if (hexString.length % 2 !== 0) {
     throw new Error("Hex string must have even number of characters");
   }
@@ -155,12 +155,12 @@ function hexStringToUint8Array(hexString: string) {
   return uint8Array;
 }
 
-function uint8ArrayToHexString(uint8Array: Uint8Array) {
+export function uint8ArrayToHexString(uint8Array: Uint8Array) {
   return Array.from(uint8Array)
     .map((byte) => ("0" + byte.toString(16)).slice(-2))
     .join("");
 }
 
-function arrayBufferToHexString(uint8Array: ArrayBuffer) {
+export function arrayBufferToHexString(uint8Array: ArrayBuffer) {
   return uint8ArrayToHexString(new Uint8Array(uint8Array));
 }

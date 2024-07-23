@@ -27,7 +27,7 @@ export function bitsToUint8Array(bits: boolean[]) {
   return result;
 }
 
-export function bitsToBIP39(bits: boolean[]) {
+export function bitsToBIP39(bits: boolean[]): string[] {
   const length = Math.ceil(bits.length / BIP39_BITS_DEPTH);
 
   const result = [];
@@ -48,12 +48,11 @@ export function bitsToBIP39(bits: boolean[]) {
     result.push(BIP39_RUNE[index]);
   }
 
-  return result.join(" ");
+  return result;
 }
 
-export function bip39ToBits(bip39: string) {
+export function bip39ToBits(words: string[]) {
   const bits: boolean[] = [];
-  const words = bip39.split(" ");
 
   for (let i = 0; i < words.length; i++) {
     let index = BIP39_RUNE.indexOf(words[i]);
