@@ -1,8 +1,8 @@
 import { pbkdf2, randomBytes } from "../crypto.ts";
 
-export const SECRET_LOCK_PK_LENGTH_MIN = 32;
-export const SECRET_LOCK_PK_LENGTH_MAX = 256;
+export const SECRET_LOCK_DERIVED_LENGTH = 32;
 export const SECRET_LOCK_PK_ITERATIONS = 600000;
+export const SECRET_LOCK_PK_LENGTH = 16;
 
 export default class SecretLock {
   pk: string;
@@ -15,16 +15,9 @@ export default class SecretLock {
     console.log("Created SecretLock " + this.describe());
   }
 
-  static async withPassword(strength: number, pw: string): Promise<SecretLock> {
-    const pk = await randomBytes(strength);
-    console.log(
-      "Generated SecretLock [pk=" + pk + " @ " + strength + ", pw=" + pw + "]",
-    );
+  static async withPassword(pw: string): Promise<SecretLock> {
+    const pk = await randomBytes(SECRET_LOCK_PK_LENGTH);
     return new SecretLock(pk, pw);
-  }
-
-  length(): number {
-    return this.pk.length / 2;
   }
 
   describe(): string {
@@ -38,7 +31,7 @@ export default class SecretLock {
       this.pw,
       this.pk,
       SECRET_LOCK_PK_ITERATIONS,
-      this.length(),
+      SECRET_LOCK_DERIVED_LENGTH,
     );
 
     console.log(

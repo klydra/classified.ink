@@ -25,13 +25,6 @@ import SecretKey from "encryption/models/secret-key";
 import SecretLock from "encryption/models/secret-lock";
 import { toast } from "sonner";
 import { useSessionStore, useUserStore } from "@/app/zustand.ts";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select.tsx";
 
 export const Route = createFileRoute("/auth")({ component: Component });
 
@@ -54,7 +47,6 @@ function Component() {
   const [username, setUsername] = useState(userStore.username ?? "");
   const [password, setPassword] = useState("");
   const [pk, setPK] = useState(userStore.pk ?? "");
-  const [strength, setStrength] = useState<number | undefined>(undefined);
 
   const { isLoading: userLoading, data: user } = useQuery({
     queryKey: [username],
@@ -157,34 +149,6 @@ function Component() {
               placeholder="Private Key"
             />
           </div>
-          <div
-            className={cn(
-              "transition-all duration-300 ease-in-out",
-              user?.status === 404
-                ? "opacity-100 h-10 mt-4"
-                : "opacity-0 h-0 pointer-events-none",
-            )}
-          >
-            <Select
-              value={strength?.toString() ?? undefined}
-              onValueChange={(value) => setStrength(Number(value))}
-            >
-              <SelectTrigger>
-                <SelectValue
-                  placeholder="Choose a key length"
-                  className="text-muted-foreground"
-                />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="256">"godlike"</SelectItem>
-                <SelectItem value="128">"uncrackable"</SelectItem>
-                <SelectItem value="64">
-                  "secure" <b>(recommended)</b>
-                </SelectItem>
-                <SelectItem value="32">"okay-ish?"</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
           <div className="flex flex-col mt-4">
             <Action
               userLoading={userLoading}
@@ -192,7 +156,6 @@ function Component() {
               username={username}
               password={password}
               pk={pk}
-              strength={strength}
             />
           </div>
         </CardContent>
@@ -207,14 +170,12 @@ function Action({
   username,
   password,
   pk,
-  strength,
 }: {
   userLoading: boolean;
   status: number | undefined;
   username: string;
   password: string;
   pk: string;
-  strength: number | undefined;
 }) {
   const navigate = useNavigate();
   const userStore = useUserStore();
@@ -237,11 +198,9 @@ function Action({
   if (status === 404)
     return (
       <Button
-        disabled={
-          !password.match(VerifyPassword) || typeof strength !== "number"
-        }
+        disabled={!password.match(VerifyPassword)}
         onClick={async () => {
-          const secretLock = await SecretLock.withPassword(strength!, password);
+          const secretLock = await SecretLock.withPassword(password);
           const secretKey = await SecretKey.withLock(secretLock);
           const user = await api.users.create.post({
             username,

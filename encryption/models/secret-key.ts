@@ -1,8 +1,8 @@
 import { decryptIV, encryptIV, pbkdf2, randomBytes } from "../crypto.ts";
-import type SecretLock from "./secret-lock.ts";
+import SecretLock, { SECRET_LOCK_DERIVED_LENGTH } from "./secret-lock.ts";
 
 export const SECRET_KEY_IV_LENGTH = 16;
-export const SECRET_KEY_PASSPORT_LENGTH = 32;
+export const SECRET_KEY_PASSPORT_LENGTH = SECRET_LOCK_DERIVED_LENGTH;
 export const SECRET_KEY_PASSPORT_ITERATIONS = 600000;
 export const SECRET_KEY_BLOB_LENGTH = 32;
 export const SECRET_KEY_BLOB_ENCRYPTED_LENGTH = 80;
