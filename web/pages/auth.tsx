@@ -25,6 +25,13 @@ import SecretKey from "encryption/models/secret-key";
 import SecretLock from "encryption/models/secret-lock";
 import { toast } from "sonner";
 import { useSessionStore, useUserStore } from "@/app/zustand.ts";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select.tsx";
 
 export const Route = createFileRoute("/auth")({ component: Component });
 
@@ -39,11 +46,15 @@ const VerifyPasswordNumber = "(?=.*\\d)";
 const VerifyPasswordLength = "^.{8,}$";
 
 function Component() {
+  const userStore = useUserStore();
+
   const [usernameFocus, setUsernameFocus] = useState(false);
   const [passwordFocus, setPasswordFocus] = useState(false);
 
-  const [username, setUsername] = useState("");
+  const [username, setUsername] = useState(userStore.username ?? "");
   const [password, setPassword] = useState("");
+  const [pk, setPK] = useState(userStore.pk ?? "");
+  const [strength, setStrength] = useState<number | undefined>(undefined);
 
   const { isLoading: userLoading, data: user } = useQuery({
     queryKey: [username],
@@ -59,7 +70,7 @@ function Component() {
           <CardTitle>Welcome dear note taker!</CardTitle>
           <CardDescription>Enter your username to get started.</CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4 mt-2">
+        <CardContent className="flex flex-col mt-2">
           <div className="flex flex-col">
             <Input
               onFocus={() => setUsernameFocus(true)}
@@ -89,7 +100,7 @@ function Component() {
               />
             </div>
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col mt-4">
             <Input
               disabled={user?.status !== 404 && user?.status !== 200}
               onFocus={() => setPasswordFocus(true)}
@@ -131,12 +142,59 @@ function Component() {
               />
             </div>
           </div>
-          <Action
-            userLoading={userLoading}
-            status={user?.status}
-            username={username}
-            password={password}
-          />
+          <div
+            className={cn(
+              "transition-all duration-300 ease-in-out",
+              user?.status === 200
+                ? "opacity-100 h-10 mt-4"
+                : "opacity-0 h-0 pointer-events-none",
+            )}
+          >
+            <Input
+              value={pk}
+              onChange={({ target: { value } }) => setPK(value)}
+              type={userStore.pk ? "password" : "text"}
+              placeholder="Private Key"
+            />
+          </div>
+          <div
+            className={cn(
+              "transition-all duration-300 ease-in-out",
+              user?.status === 404
+                ? "opacity-100 h-10 mt-4"
+                : "opacity-0 h-0 pointer-events-none",
+            )}
+          >
+            <Select
+              value={strength?.toString() ?? undefined}
+              onValueChange={(value) => setStrength(Number(value))}
+            >
+              <SelectTrigger>
+                <SelectValue
+                  placeholder="Choose a key length"
+                  className="text-muted-foreground"
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="256">"godlike"</SelectItem>
+                <SelectItem value="128">"uncrackable"</SelectItem>
+                <SelectItem value="64">
+                  "secure" <b>(recommended)</b>
+                </SelectItem>
+                <SelectItem value="32">"okay-ish?"</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col mt-4">
+            <Action
+              userLoading={userLoading}
+              status={user?.status}
+              username={username}
+              password={password}
+              pk={pk}
+              strength={strength}
+            />
+          </div>
         </CardContent>
       </Card>
     </div>
@@ -148,11 +206,15 @@ function Action({
   status,
   username,
   password,
+  pk,
+  strength,
 }: {
   userLoading: boolean;
   status: number | undefined;
   username: string;
   password: string;
+  pk: string;
+  strength: number | undefined;
 }) {
   const navigate = useNavigate();
   const userStore = useUserStore();
@@ -175,9 +237,11 @@ function Action({
   if (status === 404)
     return (
       <Button
-        disabled={!password.match(VerifyPassword)}
+        disabled={
+          !password.match(VerifyPassword) || typeof strength !== "number"
+        }
         onClick={async () => {
-          const secretLock = await SecretLock.withPassword(password);
+          const secretLock = await SecretLock.withPassword(strength!, password);
           const secretKey = await SecretKey.withLock(secretLock);
           const user = await api.users.create.post({
             username,
@@ -192,7 +256,7 @@ function Action({
           }
 
           userStore.authenticate(username, secretLock.pk);
-          sessionStore.initialize(secretKey.toString());
+          sessionStore.initialize(secretLock, secretKey);
 
           toast("Account created");
           await navigate({ to: "/hello" });
@@ -205,7 +269,40 @@ function Action({
   if (status === 200)
     return (
       <>
-        <Button>
+        <Button
+          disabled={!password.length || !pk.length}
+          onClick={async () => {
+            const secretLock = new SecretLock(pk, password);
+
+            const user = await api.users.get.post({ username });
+            if (user.error) {
+              toast("Couldn't retrieve account", {
+                description: user.error.value,
+              });
+              return;
+            }
+
+            const secretKey = SecretKey.fromString(user.data.secretKey);
+
+            if (!(await secretKey.proof(secretLock))) {
+              console.log("Proof failed");
+
+              toast("Couldn't verify account", {
+                description:
+                  "The provided lock (of password and private key) does not match the secret key.",
+              });
+              return;
+            }
+
+            sessionStore.initialize(secretLock, secretKey);
+
+            toast("Logged in", {
+              description: "You can now start using the app.",
+            });
+
+            await navigate({ to: "/notes" });
+          }}
+        >
           <LogIn className="mr-2 h-4 w-4" /> Log in
         </Button>
       </>

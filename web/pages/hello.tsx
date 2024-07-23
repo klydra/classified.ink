@@ -10,7 +10,7 @@ export const Route = createFileRoute("/hello")({
         <p className="px-4 py-6 text-2xl">
           Welcome aboard, <b>{userStore.username}</b>!
         </p>
-        <p className="px-4 py-6 text-xl">{userStore.pk}</p>
+        <p className="grid grid-cols-4 px-4 py-6 text-xl">{userStore.pk}</p>
         <p>
           Note this down.
           <br />

@@ -2,6 +2,7 @@ import SecretKey from "encryption/models/secret-key";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import type Note from "encryption/models/note";
+import SecretLock from "encryption/models/secret-lock";
 
 type UserStore = {
   username: string | undefined;
@@ -12,9 +13,10 @@ type UserStore = {
 
 type SessionStore = {
   secretKey: SecretKey | undefined;
+  secretLock: SecretLock | undefined;
   notes: Note[];
 
-  initialize: (secretKey: string) => void;
+  initialize: (secretLock: SecretLock, secretKey: SecretKey) => void;
 };
 
 export const useUserStore = create(
@@ -34,10 +36,9 @@ export const useUserStore = create(
 
 export const useSessionStore = create<SessionStore>((set) => ({
   secretKey: undefined,
+  secretLock: undefined,
   notes: [],
 
-  initialize: (secretKey: string) =>
-    set({ secretKey: SecretKey.fromString(secretKey) }),
+  initialize: (secretLock: SecretLock, secretKey: SecretKey) =>
+    set({ secretLock, secretKey }),
 }));
-
-// 6#AjzB$c

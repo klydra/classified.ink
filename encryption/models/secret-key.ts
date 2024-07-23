@@ -1,9 +1,9 @@
-import type SecretLock from "./secret-lock.ts";
 import { decryptIV, encryptIV, pbkdf2, randomBytes } from "../crypto.ts";
+import type SecretLock from "./secret-lock.ts";
 
 export const SECRET_KEY_IV_LENGTH = 16;
 export const SECRET_KEY_PASSPORT_LENGTH = 32;
-export const SECRET_KEY_PASSPORT_ITERATIONS = 100000;
+export const SECRET_KEY_PASSPORT_ITERATIONS = 600000;
 export const SECRET_KEY_BLOB_LENGTH = 32;
 export const SECRET_KEY_BLOB_ENCRYPTED_LENGTH = 80;
 export const SECRET_KEY_LENGTH =
@@ -20,49 +20,120 @@ export default class SecretKey {
     this.iv = iv;
     this.passport = passport;
     this.blob = blob;
+
+    console.log("Created SecretKey " + this.describe());
   }
 
-  static fromString(note: string): SecretKey {
+  static fromString(secretKey: string): SecretKey {
     return new SecretKey(
-      note.slice(0, SECRET_KEY_IV_LENGTH),
-      note.slice(
-        SECRET_KEY_IV_LENGTH,
-        SECRET_KEY_IV_LENGTH + SECRET_KEY_PASSPORT_LENGTH,
+      secretKey.slice(0, SECRET_KEY_IV_LENGTH * 2),
+      secretKey.slice(
+        SECRET_KEY_IV_LENGTH * 2,
+        SECRET_KEY_IV_LENGTH * 2 + SECRET_KEY_PASSPORT_LENGTH * 2,
       ),
-      note.slice(SECRET_KEY_IV_LENGTH + SECRET_KEY_PASSPORT_LENGTH),
+      secretKey.slice(
+        SECRET_KEY_IV_LENGTH * 2 + SECRET_KEY_PASSPORT_LENGTH * 2,
+      ),
     );
+  }
+
+  static async withLock(lock: SecretLock): Promise<SecretKey> {
+    console.log("Generating SecretKey...");
+
+    const iv = await randomBytes(SECRET_KEY_IV_LENGTH);
+    const secretKey = await randomBytes(SECRET_KEY_BLOB_LENGTH);
+
+    const derived = await lock.derive();
+
+    console.log("Encrypting SecretKey...");
+
+    const encrypted = await encryptIV(derived, iv, secretKey);
+
+    console.log("Generating Passport...");
+
+    const passport = await pbkdf2(
+      encrypted,
+      derived,
+      SECRET_KEY_PASSPORT_ITERATIONS,
+      SECRET_KEY_PASSPORT_LENGTH,
+    );
+
+    console.log(
+      "Generating SecretKey [iv=" +
+        iv +
+        ", derived=" +
+        derived +
+        " -> passport=" +
+        passport +
+        ", blob=" +
+        encrypted +
+        "]",
+    );
+
+    return new SecretKey(iv, passport, encrypted);
   }
 
   toString(): string {
     return this.iv + this.passport + this.blob;
   }
 
-  static async withLock(lock: SecretLock): Promise<SecretKey> {
-    const iv = await randomBytes(SECRET_KEY_IV_LENGTH);
-    const secretKey = await randomBytes(SECRET_KEY_BLOB_LENGTH);
+  describe(): string {
+    return (
+      "[iv=" +
+      this.iv +
+      ", passport=" +
+      this.passport +
+      ", blob=" +
+      this.blob +
+      "]"
+    );
+  }
 
-    const encrypted = await encryptIV(await lock.derive(), iv, secretKey);
+  async decrypt(lock: SecretLock): Promise<string> {
+    const derived = await lock.derive();
 
-    const passport = await pbkdf2(
+    console.log("Decrypting SecretKey...");
+
+    const decrypted = await decryptIV(derived, this.iv, this.blob);
+
+    console.log(
+      "Decrypted SecretKey " +
+        this.describe() +
+        " and derived lock " +
+        derived +
+        " with result " +
+        decrypted,
+    );
+
+    return decrypted;
+  }
+
+  async proof(lock: SecretLock): Promise<boolean> {
+    console.log("Generating Proof for SecretKey...");
+
+    const derived = await lock.derive();
+    const decrypted = await this.decrypt(lock);
+
+    console.log("Encrypting SecretKey...");
+
+    const encrypted = await encryptIV(derived, this.iv, decrypted);
+
+    console.log("Generating Proof to match against...");
+
+    const expected = await pbkdf2(
       encrypted,
-      await lock.derive(),
+      derived,
       SECRET_KEY_PASSPORT_ITERATIONS,
       SECRET_KEY_PASSPORT_LENGTH,
     );
 
-    return new SecretKey(iv, passport, encrypted);
-  }
-
-  async decrypt(lock: SecretLock): Promise<string> {
-    return await decryptIV(await lock.derive(), this.iv, this.blob);
-  }
-
-  async proof(derived: string): Promise<boolean> {
-    const expected = await pbkdf2(
-      this.blob,
-      derived,
-      SECRET_KEY_PASSPORT_ITERATIONS,
-      SECRET_KEY_PASSPORT_LENGTH,
+    console.log(
+      "Generated Proof for SecretKey " +
+        this.describe() +
+        " and derived lock " +
+        derived +
+        " with result " +
+        expected,
     );
 
     return expected === this.passport;

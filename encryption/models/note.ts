@@ -12,14 +12,12 @@ export default class Note {
   constructor(iv: string, blob: string) {
     this.iv = iv;
     this.blob = blob;
+
+    console.log("Created Note " + this.describe());
   }
 
   static fromString(note: string): Note {
     return new Note(note.slice(0, NOTE_IV_LENGTH), note.slice(NOTE_IV_LENGTH));
-  }
-
-  toString(): string {
-    return this.iv + this.blob;
   }
 
   static async fromContent(
@@ -28,21 +26,39 @@ export default class Note {
     lock: SecretLock,
   ): Promise<Note> {
     const iv = await randomBytes(NOTE_IV_LENGTH);
-    const encrypted = await encryptIV(
-      await secretKey.decrypt(lock),
-      iv,
-      content.toString(),
+    const secret = await secretKey.decrypt(lock);
+
+    console.log(
+      "Generating encrypted Note [iv=" +
+        iv +
+        ", blob=" +
+        content.toString() +
+        "] with secret " +
+        secret,
     );
+
+    const encrypted = await encryptIV(secret, iv, content.toString());
 
     return new Note(iv, encrypted);
   }
 
+  toString(): string {
+    return this.iv + this.blob;
+  }
+
+  describe(): string {
+    return "[iv=" + this.iv + ", blob=" + this.blob + "]";
+  }
+
   async decrypt(secretKey: SecretKey, lock: SecretLock): Promise<NoteContent> {
-    const decrypted = await decryptIV(
-      await secretKey.decrypt(lock),
-      this.iv,
-      this.blob,
+    const secret = await secretKey.decrypt(lock);
+
+    console.log(
+      "Generating encrypted Note " + this.describe() + " with secret " + secret,
     );
+
+    const decrypted = await decryptIV(secret, this.iv, this.blob);
+
     return NoteContent.fromString(decrypted);
   }
 }
