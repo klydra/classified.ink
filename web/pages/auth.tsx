@@ -25,6 +25,7 @@ import SecretKey from "encryption/models/secret-key";
 import SecretLock from "encryption/models/secret-lock";
 import { toast } from "sonner";
 import { useSessionStore, useUserStore } from "@/app/zustand.ts";
+import { BIP39_RUNE } from "encryption/bip39";
 
 export const Route = createFileRoute("/auth")({ component: Component });
 
@@ -46,7 +47,7 @@ function Component() {
 
   const [username, setUsername] = useState(userStore.username ?? "");
   const [password, setPassword] = useState("");
-  const [pk, setPK] = useState(userStore.pk ?? "");
+  const [pk, setPK] = useState<string[]>(userStore.pk ? [userStore.pk] : []); // TODO
 
   const { isLoading: userLoading, data: user } = useQuery({
     queryKey: [username],
@@ -137,17 +138,12 @@ function Component() {
           <div
             className={cn(
               "transition-all duration-300 ease-in-out",
-              user?.status === 200
+              user?.status === 200 && !userStore.pk
                 ? "opacity-100 h-10 mt-4"
                 : "opacity-0 h-0 pointer-events-none",
             )}
           >
-            <Input
-              value={pk}
-              onChange={({ target: { value } }) => setPK(value)}
-              type={userStore.pk ? "password" : "text"}
-              placeholder="Private Key"
-            />
+            <BIP39Input pk={pk} setPK={setPK} />
           </div>
           <div className="flex flex-col mt-4">
             <Action
@@ -175,7 +171,7 @@ function Action({
   status: number | undefined;
   username: string;
   password: string;
-  pk: string;
+  pk: string[];
 }) {
   const navigate = useNavigate();
   const userStore = useUserStore();
@@ -298,6 +294,103 @@ function Requirement({
         <XCircle className="h-3 w-3" />
       )}
       {description}
+    </div>
+  );
+}
+
+function BIP39Input({
+  pk,
+  setPK,
+}: {
+  pk: string[];
+  setPK: (value: string[]) => void;
+}) {
+  const TOTAL_WORDS = 12;
+
+  const [phrase, setPhrase] = useState<string[]>([""]);
+
+  function onChange(value: string) {
+    if (!value.match("^([a-z]+ {0,1})+$")) return;
+
+    const words = value.split(" ");
+    const trailing = words[words.length - 1];
+    const result: string[] = [];
+
+    for (let i = 0; i < words.length - 1; i++) {
+      if (BIP39_RUNE.includes(words[i])) {
+        result.push(words[i]);
+      }
+    }
+
+    console.log("phrase: ");
+    console.log(phrase);
+
+    console.log("words: ");
+    console.log(words);
+
+    console.log(value);
+
+    console.log("trailing: " + trailing);
+
+    if (
+      value.length === 0 ||
+      value.endsWith(" ") ||
+      trailing.length > phrase[phrase.length - 1].length
+    ) {
+      if (trailing.length > 0 && BIP39_RUNE.includes(trailing)) {
+        result.push(trailing);
+        result.push("");
+      } else {
+        const matches = BIP39_RUNE.filter((item) => item.startsWith(trailing));
+        console.log(matches);
+
+        if (
+          matches.length === 1 &&
+          trailing.length > phrase[phrase.length - 1].length
+        ) {
+          result.push(matches[0]);
+          result.push("");
+        }
+
+        if (matches.length > 1) {
+          result.push(trailing);
+        }
+
+        if (matches.length === 0) {
+          result.push("");
+        }
+      }
+    } else {
+      console.log("destory");
+      if (words.length < phrase.length && words.length > 0) result.pop();
+      result.push("");
+    }
+
+    if (
+      result[result.length - 1].length === 0 &&
+      (result.length === TOTAL_WORDS + 1 || result.length === 0)
+    ) {
+      result.pop();
+    }
+
+    setPhrase(result);
+
+    if (phrase.length === TOTAL_WORDS && phrase[TOTAL_WORDS - 1] === "") {
+      setPK(phrase);
+    } else {
+      setPK([]);
+    }
+  }
+
+  return (
+    <div className="w-full flex flex-col">
+      <Input
+        disabled={pk.length > 0}
+        value={phrase.join(" ")}
+        onChange={({ target: { value } }) => onChange(value)}
+        type="text"
+        placeholder="Private Key"
+      />
     </div>
   );
 }

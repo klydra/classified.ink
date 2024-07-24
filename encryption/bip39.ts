@@ -72,9 +72,9 @@ export function bip39ToBits(words: string[]) {
   return bits;
 }
 
-const BIP39_BITS_DEPTH = 11;
+export const BIP39_BITS_DEPTH = 11;
 
-const BIP39_RUNE = [
+export const BIP39_RUNE = [
   "abandon",
   "ability",
   "able",

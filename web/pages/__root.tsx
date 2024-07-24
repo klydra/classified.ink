@@ -12,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip.tsx";
 import { useUserStore } from "@/app/zustand.ts";
+import { Toaster } from "@/components/ui/sonner.tsx";
 
 const TanStackRouterDevtools =
   process.env.NODE_ENV === "production"
@@ -102,6 +103,7 @@ function Component() {
       <Suspense>
         <TanStackRouterDevtools />
       </Suspense>
+      <Toaster />
     </TooltipProvider>
   );
 }
