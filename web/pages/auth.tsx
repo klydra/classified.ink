@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import {
@@ -307,7 +308,8 @@ function BIP39Input({
 }) {
   const TOTAL_WORDS = 12;
 
-  const [phrase, setPhrase] = useState<string[]>([""]);
+  const [phrase, setPhrase] = useState<string[]>([]);
+  const [input, setInput] = useState<string>("");
 
   function onChange(value: string) {
     if (!value.match("^([a-z]+ {0,1})+$")) return;
@@ -332,61 +334,48 @@ function BIP39Input({
 
     console.log("trailing: " + trailing);
 
-    if (
-      value.length === 0 ||
-      value.endsWith(" ") ||
-      trailing.length > phrase[phrase.length - 1].length
-    ) {
-      if (trailing.length > 0 && BIP39_RUNE.includes(trailing)) {
-        result.push(trailing);
-        result.push("");
-      } else {
-        const matches = BIP39_RUNE.filter((item) => item.startsWith(trailing));
-        console.log(matches);
-
-        if (
-          matches.length === 1 &&
-          trailing.length > phrase[phrase.length - 1].length
-        ) {
-          result.push(matches[0]);
-          result.push("");
-        }
-
-        if (matches.length > 1) {
-          result.push(trailing);
-        }
-
-        if (matches.length === 0) {
-          result.push("");
-        }
-      }
-    } else {
-      console.log("destory");
-      if (words.length < phrase.length && words.length > 0) result.pop();
-      result.push("");
+    if (trailing.length > 0 && BIP39_RUNE.includes(trailing)) {
+      setPhrase([...phrase, trailing]);
+      setInput("");
+      return;
     }
 
-    if (
-      result[result.length - 1].length === 0 &&
-      (result.length === TOTAL_WORDS + 1 || result.length === 0)
-    ) {
-      result.pop();
+    const matches = BIP39_RUNE.filter((item) => item.startsWith(trailing));
+
+    if (matches.length === 1) {
+      setPhrase([...phrase, matches[0]]);
+      setInput("");
+      return;
     }
 
-    setPhrase(result);
+    if (matches.length > 1) {
+      setInput(trailing);
+      return;
+    }
+
+    if (matches.length === 0) {
+      setInput("");
+      return;
+    }
+  }
+
+  /*
 
     if (phrase.length === TOTAL_WORDS && phrase[TOTAL_WORDS - 1] === "") {
       setPK(phrase);
     } else {
       setPK([]);
     }
-  }
+   */
 
   return (
-    <div className="w-full flex flex-col">
+    <div className="w-full flex">
+      {phrase.map((item) => (
+        <Badge>{item}</Badge>
+      ))}
       <Input
         disabled={pk.length > 0}
-        value={phrase.join(" ")}
+        value={input}
         onChange={({ target: { value } }) => onChange(value)}
         type="text"
         placeholder="Private Key"
