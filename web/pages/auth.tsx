@@ -17,6 +17,7 @@ import {
   LogIn,
   Plus,
   RectangleEllipsis,
+  X,
   XCircle,
 } from "lucide-react";
 import { UserUsername } from "api/drizzle/schema";
@@ -140,7 +141,7 @@ function Component() {
             className={cn(
               "transition-all duration-300 ease-in-out",
               user?.status === 200 && !userStore.pk
-                ? "opacity-100 h-10 mt-4"
+                ? "opacity-100 h-52 mt-4"
                 : "opacity-0 h-0 pointer-events-none",
             )}
           >
@@ -312,49 +313,48 @@ function BIP39Input({
   const [input, setInput] = useState<string>("");
 
   function onChange(value: string) {
+    if (value.length < input.length) {
+      setInput(value);
+      return;
+    }
+
     if (!value.match("^([a-z]+ {0,1})+$")) return;
 
     const words = value.split(" ");
     const trailing = words[words.length - 1];
-    const result: string[] = [];
+    let newPhrase: string[] = phrase;
 
     for (let i = 0; i < words.length - 1; i++) {
       if (BIP39_RUNE.includes(words[i])) {
-        result.push(words[i]);
+        newPhrase.push(words[i]);
       }
     }
 
-    console.log("phrase: ");
-    console.log(phrase);
-
-    console.log("words: ");
-    console.log(words);
-
-    console.log(value);
-
-    console.log("trailing: " + trailing);
-
     if (trailing.length > 0 && BIP39_RUNE.includes(trailing)) {
-      setPhrase([...phrase, trailing]);
+      newPhrase.push(trailing);
       setInput("");
+      setPhrase(newPhrase);
       return;
     }
 
     const matches = BIP39_RUNE.filter((item) => item.startsWith(trailing));
 
     if (matches.length === 1) {
-      setPhrase([...phrase, matches[0]]);
+      newPhrase.push(matches[0]);
       setInput("");
+      setPhrase(newPhrase);
       return;
     }
 
     if (matches.length > 1) {
       setInput(trailing);
+      setPhrase(newPhrase);
       return;
     }
 
     if (matches.length === 0) {
       setInput("");
+      setPhrase(newPhrase);
       return;
     }
   }
@@ -369,17 +369,45 @@ function BIP39Input({
    */
 
   return (
-    <div className="w-full flex">
-      {phrase.map((item) => (
-        <Badge>{item}</Badge>
-      ))}
+    <div className="w-full flex flex-col gap-4">
       <Input
         disabled={pk.length > 0}
         value={input}
         onChange={({ target: { value } }) => onChange(value)}
         type="text"
-        placeholder="Private Key"
+        placeholder={
+          "Private Key (" + phrase.length + " out of " + TOTAL_WORDS + " words)"
+        }
       />
+      <div className="w-full max-w-full flex flex-wrap gap-3">
+        {phrase.map((item, index) => (
+          <Badge
+            key={"w" + index}
+            onClick={() => setPhrase(phrase.filter((_, i) => i !== index))}
+            className="py-1 px-3 flex items-center gap-1 cursor-pointer select-none"
+          >
+            {item}
+            <X className="h-3 w-3" />
+          </Badge>
+        ))}
+        {Array(TOTAL_WORDS - phrase.length)
+          .fill(undefined)
+          .map((_, index) => (
+            <Badge
+              key={"g" + index}
+              className="py-1 px-3 flex items-center gap-1 pointer-events-none"
+              variant="secondary"
+            >
+              <div
+                style={{
+                  width:
+                    Math.max(Math.min((index * Math.PI) % 6, 6), 3) + "rem",
+                  height: "1rem",
+                }}
+              ></div>
+            </Badge>
+          ))}
+      </div>
     </div>
   );
 }
